@@ -39,7 +39,7 @@ Because the heavy work lives in the intermediate format, re-curating with a diff
 Build it in the dev container:
 
 ```bash
-git clone --recursive https://github.com/airoa-org/rebake.git
+git clone --recursive <repository-url> rebake
 cd rebake
 docker compose -f docker/docker-compose.yml up -d --build
 docker compose -f docker/docker-compose.yml exec rebake-dev bash
@@ -174,10 +174,10 @@ See [python/](python/) for the full API and examples.
 
 ## Contributing
 
-Issues and pull requests are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md) and come say hello in [Discussions](https://github.com/airoa-org/rebake/discussions).
+Issues and pull requests are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md) and come say hello in Discussions.
 
 ## License
 
 Licensed under the Apache License, Version 2.0 — see the [LICENSE](LICENSE) file for details.
 
-Copyright © 2026 AI Robot Association.
+Copyright © 2026 Anonymous Authors.

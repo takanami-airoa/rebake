@@ -4,17 +4,17 @@ Thanks for considering a contribution! rebake is in its early days (pre-1.0), an
 
 ## Code of Conduct
 
-This project adheres to the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md). By participating, you agree to uphold it. To report concerns privately, contact the maintainers at `report@airoa.org`.
+This project adheres to the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md). By participating, you agree to uphold it. To report concerns privately, contact the maintainers at `the maintainers (contact withheld for anonymous review)`.
 
 ## Reporting issues
 
 - **Bugs**: open a GitHub issue with a minimal reproducible example (the rosbag or pipeline config that triggers it), the rebake version, and your environment (OS, GPU/codec setup, FFmpeg version if relevant).
-- **Security issues**: please report privately to `report@airoa.org` rather than opening a public issue.
+- **Security issues**: please report privately to `the maintainers (contact withheld for anonymous review)` rather than opening a public issue.
 - **Feature ideas**: open an issue to discuss before sending a large PR. Small fixes can go straight to a PR.
 
 ## Finding ways to help
 
-Issues labeled [`good first issue`](https://github.com/airoa-org/rebake/labels/good%20first%20issue) and [`help wanted`](https://github.com/airoa-org/rebake/labels/help%20wanted) are good starting points.
+Issues labeled `good first issue` and `help wanted` are good starting points.
 
 rebake is pre-1.0 with a deliberately narrow public surface. Before opening a PR for new functionality, please open an issue to discuss it — we may decide the feature is out of scope or needs a different shape.
 
@@ -23,7 +23,7 @@ rebake is pre-1.0 with a deliberately narrow public surface. Before opening a PR
 ### Clone
 
 ```bash
-git clone --recursive https://github.com/airoa-org/rebake.git
+git clone --recursive <repository-url> rebake
 cd rebake
 ```
 
@@ -107,7 +107,7 @@ Contributors may use a variety of tools when preparing changes to rebake, includ
 
 ## Need help?
 
-If you get stuck or want to discuss before starting, please open an issue or start a [GitHub Discussion](https://github.com/airoa-org/rebake/discussions).
+If you get stuck or want to discuss before starting, please open an issue or start a GitHub Discussion.
 
 ---
 

@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "Python bindings for rebake-rs robotics data processing library"
 readme = "README.md"
 authors = [
-    { name = "masafumi-airoa", email = "takahashi.masafumi@airoa.org" }
+    { name = "Anonymous" }
 ]
 requires-python = ">=3.9"
 dependencies = [

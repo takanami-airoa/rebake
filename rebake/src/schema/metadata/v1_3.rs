@@ -288,7 +288,7 @@ mod tests {
             },
             {
                 "role": "operator",
-                "id": "weblab-admin"
+                "id": "lab-admin"
             },
             {
                 "role": "task-template",

@@ -1,9 +1,9 @@
 site_name: rebake
 site_description: Python library for converting ROS bag files to ML-ready datasets
-site_url: https://airoa-org.github.io/rebake-rs/
+site_url: <docs-url>
 
 repo_name: rebake-rs
-repo_url: https://github.com/airoa-org/rebake-rs
+repo_url: <repository-url>
 
 theme:
   name: material

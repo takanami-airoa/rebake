@@ -4,7 +4,7 @@ members = ["rebake", "rebake-cli", "python"]
 
 [workspace.package]
 version = "0.1.0"
-authors = ["AI Robot Association"]
+authors = ["Anonymous"]
 edition = "2024"
 rust-version = "1.88"
 license = "Apache-2.0"

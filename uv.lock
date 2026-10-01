@@ -20,7 +20,7 @@ members = [
 [[package]]
 name = "airoa-metadata"
 version = "1.3.0"
-source = { git = "https://github.com/airoa-org/airoa-metadata.git?tag=v1.4#8d05fd89cd7bccea8b1cecd99d82d76affd25b43" }
+source = { git = "<metadata-schema-repository-url>?tag=v1.4#8d05fd89cd7bccea8b1cecd99d82d76affd25b43" }
 dependencies = [
     { name = "jsonschema" },
 ]
@@ -2011,7 +2011,7 @@ video = [
 
 [package.metadata]
 requires-dist = [
-    { name = "airoa-metadata", git = "https://github.com/airoa-org/airoa-metadata.git?tag=v1.4" },
+    { name = "airoa-metadata", git = "<metadata-schema-repository-url>?tag=v1.4" },
     { name = "altair", specifier = ">=5.5.0" },
     { name = "av", marker = "extra == 'video'", specifier = ">=16.0.1" },
     { name = "huggingface-hub", marker = "extra == 'huggingface'", specifier = ">=0.35.3" },

@@ -31,7 +31,7 @@ video = [
 output_max_bytes = 10_000_000
 
 [tool.uv.sources]
-airoa-metadata = { git = "https://github.com/airoa-org/airoa-metadata.git", tag = "v1.4" }
+airoa-metadata = { git = "<metadata-schema-repository-url>", tag = "v1.4" }  # withheld for anonymous review
 
 [tool.uv.workspace]
 members = [

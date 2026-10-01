@@ -40,7 +40,7 @@ rebake は ROS bag を **一度だけ** デコードして、クエリ可能な 
 開発用コンテナでビルドします:
 
 ```bash
-git clone --recursive https://github.com/airoa-org/rebake.git
+git clone --recursive <repository-url> rebake
 cd rebake
 docker compose -f docker/docker-compose.yml up -d --build
 docker compose -f docker/docker-compose.yml exec rebake-dev bash
@@ -175,10 +175,10 @@ context = LeRobotV21TransformerConfig(
 
 ## コントリビュート
 
-Issue や Pull Request を歓迎します。[CONTRIBUTING.md](CONTRIBUTING.md) を読み、[Discussions](https://github.com/airoa-org/rebake/discussions) で気軽に声をかけてください。
+Issue や Pull Request を歓迎します。[CONTRIBUTING.md](CONTRIBUTING.md) を読み、Discussions で気軽に声をかけてください。
 
 ## License
 
 Apache License, Version 2.0 のもとで公開されています。詳細は [LICENSE](LICENSE) を参照してください。
 
-Copyright © 2026 AI Robot Association.
+Copyright © 2026 Anonymous Authors.

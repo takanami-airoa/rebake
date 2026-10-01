@@ -105,5 +105,3 @@ A pipeline is a sequence of **stages** sharing a **context**, configured in YAML
 
 - Apache-2.0.
 
-[Unreleased]: https://github.com/airoa-org/rebake/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/airoa-org/rebake/releases/tag/v0.1.0
