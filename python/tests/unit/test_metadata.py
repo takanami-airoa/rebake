@@ -19,7 +19,7 @@ def test_parse_metadata_as_v2_0_converts_v1_3_input() -> None:
                 "entities": [
                     {"role": "robot", "id": "robot-1"},
                     {"role": "location", "name": "site-a"},
-                    {"role": "organization", "name": "airoa"},
+                    {"role": "organization", "name": "moma"},
                 ],
                 "components": [
                     {
@@ -52,7 +52,7 @@ def test_parse_metadata_as_v2_0_converts_v1_3_input() -> None:
     assert isinstance(normalized, MetadataV2_0)
     assert normalized.schema_version == "2.0"
     assert normalized.uuid == "550e8400-e29b-41d4-a716-446655440000"
-    assert normalized.runner.organization == "airoa"
+    assert normalized.runner.organization == "moma"
     assert normalized.environment.site == "site-a"
     assert normalized.robot.id == "robot-1"
     assert normalized.robot.robot_type == "HSR"
@@ -201,7 +201,7 @@ def test_typed_full_construction() -> None:
         uuid="11111111-2222-3333-4444-555555555555",
         robot=Robot(robot_type="hsr2", id="r-001"),
         environment=Environment(env_type=EnvType.RealWorld, site="lab"),
-        runner=Runner(runner_type=RunnerType.Operator, organization="airoa", name="u"),
+        runner=Runner(runner_type=RunnerType.Operator, organization="moma", name="u"),
         programs=[Program(role="interface", name="teleop_v1")],
         labels=["pick", "place"],
     )
@@ -296,16 +296,16 @@ def test_to_dict_from_dict_roundtrip() -> None:
 def test_context_accepts_typed_metadata() -> None:
     ctx = Context()
     m = _valid_metadata()
-    ctx.set_airoa_metadata(m)
-    got = ctx.get_airoa_metadata()
+    ctx.set_moma_metadata(m)
+    got = ctx.get_moma_metadata()
     assert got is not None and got["uuid"] == m.uuid
 
 
 def test_context_accepts_dict_metadata_for_back_compat() -> None:
     ctx = Context()
     m = _valid_metadata()
-    ctx.set_airoa_metadata(json.loads(m.to_json()))
-    assert ctx.get_airoa_metadata() is not None
+    ctx.set_moma_metadata(json.loads(m.to_json()))
+    assert ctx.get_moma_metadata() is not None
 
 
 def test_context_rejects_invalid_typed_metadata_at_boundary() -> None:
@@ -313,7 +313,7 @@ def test_context_rejects_invalid_typed_metadata_at_boundary() -> None:
     m = _valid_metadata()
     m.files = []
     with pytest.raises(ValueError, match="files"):
-        ctx.set_airoa_metadata(m)
+        ctx.set_moma_metadata(m)
 
 
 def test_context_rejects_invalid_dict_metadata_at_boundary() -> None:
@@ -322,7 +322,7 @@ def test_context_rejects_invalid_dict_metadata_at_boundary() -> None:
     bad = json.loads(m.to_json())
     bad["files"] = []
     with pytest.raises(ValueError, match="files"):
-        ctx.set_airoa_metadata(bad)
+        ctx.set_moma_metadata(bad)
 
 
 # ---- Equality ----

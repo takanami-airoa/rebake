@@ -24,7 +24,7 @@ This is a minimal copy-and-fill shape. Use `null` when a value is unavailable.
 
 ```json
 {
-  "$schema": "https://raw.githubusercontent.com/airoa-org/airoa-metadata/main/airoa_metadata/schemas/v2_0.json",
+  "$schema": "https://raw.githubusercontent.com/anonymous-org/moma-metadata/main/moma_metadata/schemas/v2_0.json",
   "schema_version": "2.0",
   "uuid": "123e4567-e89b-12d3-a456-426614174000",
   "robot": {
@@ -155,7 +155,7 @@ Use this to avoid a failed run.
 | Message fragment | Cause | Fix |
 |---|---|---|
 | `failed to read meta.json` | No `meta.json` next to the ROS bag | Put it in the same directory, not a subdirectory |
-| `missing required data: airoa_metadata` | A metadata-dependent stage ran without metadata | Restore `require_metadata: true` or remove that stage |
+| `missing required data: moma_metadata` | A metadata-dependent stage ran without metadata | Restore `require_metadata: true` or remove that stage |
 | `skipped:` stops the run | `UuidEnricherConfig` ran without metadata | Add `meta.json` or remove that stage |
 | `no segments overlap` | Segment times do not overlap the recording | Check the time clock. Also check that a Synchronizer is present |
 | missing errors mentioning program or git fields | The two required `programs[]` roles are incomplete | Add `interface` and `data_collection` entries with `source.git` |

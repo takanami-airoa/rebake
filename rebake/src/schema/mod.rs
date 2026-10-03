@@ -1,6 +1,6 @@
 //! Schema definitions for rebake data structures.
 //!
-//! Provides feature mapping types and Airoa metadata structures
+//! Provides feature mapping types and Moma metadata structures
 //! used throughout the pipeline.
 //!
 //! # Responsibilities

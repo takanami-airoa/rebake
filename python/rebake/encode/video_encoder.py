@@ -228,7 +228,7 @@ class VideoEncoderConfig(BaseModel):
 
         - ``video_cache_dir`` is obtained from the Context (either directly set
           via ``context.set_video_cache_dir()`` or defaults to ``./video_cache``)
-        - ``uuid`` is obtained from ``airoa_metadata`` in the Context
+        - ``uuid`` is obtained from ``moma_metadata`` in the Context
 
     This class provides two methods for processing data:
 
@@ -304,7 +304,7 @@ class VideoEncoder:
     ``{video_cache_dir}/{uuid}/{topic}.mp4``, where:
 
     - ``video_cache_dir`` is obtained from the Context
-    - ``uuid`` is obtained from ``airoa_metadata`` in the Context
+    - ``uuid`` is obtained from ``moma_metadata`` in the Context
 
     The encoder uses AV1 codec (libsvtav1) with configurable quality
     settings. Output files are named based on the topic name (e.g.,
@@ -319,7 +319,7 @@ class VideoEncoder:
     Note:
         The ``run()`` method requires:
 
-        - ``airoa_metadata`` to be present in the context (loaded by
+        - ``moma_metadata`` to be present in the context (loaded by
           Rosbag2Ingestor with meta.json)
         - Either ``video_cache_dir`` or ``output_dir`` set in the context
 
@@ -354,7 +354,7 @@ class VideoEncoder:
         Args:
             context: The context containing image data to encode. Must have:
 
-                - ``airoa_metadata`` (loaded by Rosbag2Ingestor with meta.json)
+                - ``moma_metadata`` (loaded by Rosbag2Ingestor with meta.json)
                 - Either ``video_cache_dir`` or ``output_dir`` set in the context.
                   If only ``output_dir`` is set, videos are saved to
                   ``{output_dir}/video_cache/{uuid}/{topic}.mp4``.
@@ -408,7 +408,7 @@ class VideoEncoder:
         context = Context()
         context.set_video_cache_dir(video_cache_dir)
         context.set_image_data(image_data)
-        context.set_airoa_metadata(_create_minimal_metadata(uuid))
+        context.set_moma_metadata(_create_minimal_metadata(uuid))
         context = self.run(context)
         local_paths = context.video_paths or {}
         config_json = self._canonical_config_json()
@@ -440,7 +440,7 @@ class VideoEncoder:
 
 
 def _create_minimal_metadata(uuid: str) -> dict[str, Any]:
-    """Create minimal airoa metadata with the given UUID.
+    """Create minimal moma metadata with the given UUID.
 
     This creates the minimum required metadata structure for VideoEncoder
     to extract the UUID for directory naming.

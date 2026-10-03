@@ -3,7 +3,7 @@
 //! # Overview
 //!
 //! Assembles episode data from synchronized topic LazyFrames based on
-//! segment definitions in Airoa metadata. Handles feature extraction,
+//! segment definitions in Moma metadata. Handles feature extraction,
 //! joining, and struct-to-list normalization.
 //!
 //! # Responsibilities

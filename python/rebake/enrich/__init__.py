@@ -17,7 +17,7 @@ Available enrichers:
 - DeltaTransformEnricher: Calculates changes in transforms.
 - HeadCommandEnricher: Extracts head command data.
 - HandCommandEnricher: Extracts hand command data.
-- UuidEnricher: Adds rosbag_uuid column from airoa metadata.
+- UuidEnricher: Adds rosbag_uuid column from moma metadata.
 - ShiftEnricher: Shifts column values by N steps for temporal offset.
 
 Example:

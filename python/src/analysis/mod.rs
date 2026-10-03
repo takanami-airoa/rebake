@@ -122,7 +122,7 @@ fn py_compute_segment_metrics(
     let topic_timestamps = extract_i64_mapping(&topic_timestamps_ns, "topic_timestamps_ns")?;
     let metadata = parse_metadata_as_v2_0(metadata_json).map_err(|error| {
         PyValueError::new_err(format!(
-            "metadata_json must contain valid Airoa metadata: {error}"
+            "metadata_json must contain valid Moma metadata: {error}"
         ))
     })?;
     let rows =

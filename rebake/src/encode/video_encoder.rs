@@ -1091,7 +1091,7 @@ impl ScalingFlag {
 /// The encoder saves videos to `{video_cache_dir}/{uuid}/{topic}.mp4`, where:
 /// - `video_cache_dir` is obtained from `context.video_cache_dir()`, with fallback to
 ///   `./video_cache` (relative to current working directory) if not set
-/// - `uuid` is obtained from `airoa_metadata` in the context
+/// - `uuid` is obtained from `moma_metadata` in the context
 ///
 /// This ensures that videos from different rosbags do not conflict with each other.
 #[derive(Clone, Debug, PartialEq, Deserialize, Serialize)]
@@ -1318,7 +1318,7 @@ impl StageConfig for VideoEncoderConfig {
 ///
 /// # Preconditions
 ///
-/// - `airoa_metadata`: **Required** (for UUID to create subdirectory)
+/// - `moma_metadata`: **Required** (for UUID to create subdirectory)
 /// - `image_data`: Conditional (if missing, stage sets `video_cache_dir` and returns early)
 /// - `video_cache_dir`: Optional (defaults to `./video_cache`)
 ///
@@ -1331,7 +1331,7 @@ impl StageConfig for VideoEncoderConfig {
 ///
 /// # Errors
 ///
-/// - [`StageError::MissingData`]: `airoa_metadata` not set in context
+/// - [`StageError::MissingData`]: `moma_metadata` not set in context
 /// - [`StageError::InvalidData`]: Current directory not valid UTF-8, image decode failure
 /// - [`StageError::Io`]: Directory creation failure
 /// - [`StageError::External`]: FFmpeg initialization failure, encoder errors
@@ -1369,11 +1369,11 @@ impl Stage for VideoEncoder {
             base_video_cache_dir
         };
 
-        // Get UUID from airoa_metadata and create subdirectory
+        // Get UUID from moma_metadata and create subdirectory
         let uuid = context
-            .airoa_metadata()
+            .moma_metadata()
             .map(|m| m.uuid_string())
-            .or_missing("airoa_metadata in context (did Rosbag2Ingestor load meta.json?)")?;
+            .or_missing("moma_metadata in context (did Rosbag2Ingestor load meta.json?)")?;
 
         let video_cache_dir = base_video_cache_dir.join(&uuid);
 
@@ -2972,7 +2972,7 @@ mod tests {
     use crate::common::ImageShape;
     use crate::core::Stage;
     use crate::ingest::rosbag2_ingestor::{Rosbag2Ingestor, Rosbag2IngestorConfig};
-    use crate::schema::metadata::AiroaMetadata;
+    use crate::schema::metadata::MomaMetadata;
     use crate::schema::metadata::v2_0::{
         Device, EnvType, Environment, Episode, File, GitSource, MetadataV2_0, Program, Robot,
         Runner, RunnerType, Segment, Source,
@@ -3312,7 +3312,7 @@ mod tests {
         // Set up metadata with a specific UUID
         let metadata = create_test_metadata("test-uuid-abc123");
         let test_uuid = metadata.uuid.to_string();
-        context.set_airoa_metadata(AiroaMetadata::V2_0(metadata));
+        context.set_moma_metadata(MomaMetadata::V2_0(metadata));
 
         // Set video_cache_dir in context
         let video_cache_dir = tempdir().unwrap();
@@ -3378,7 +3378,7 @@ mod tests {
         let mut ingestor = Rosbag2Ingestor::new(Rosbag2IngestorConfig::without_metadata());
         let mut context = ingestor.run(context).unwrap();
 
-        context.set_airoa_metadata(AiroaMetadata::V2_0(create_test_metadata(
+        context.set_moma_metadata(MomaMetadata::V2_0(create_test_metadata(
             "resized-artifact",
         )));
 
@@ -3432,7 +3432,7 @@ mod tests {
         // Set up metadata with a specific UUID
         let metadata = create_test_metadata("fallback-uuid-xyz789");
         let test_uuid = metadata.uuid.to_string();
-        context.set_airoa_metadata(AiroaMetadata::V2_0(metadata));
+        context.set_moma_metadata(MomaMetadata::V2_0(metadata));
 
         // Change to a temp directory so ./video_cache is created there
         let working_dir = tempdir().unwrap();
@@ -3491,7 +3491,7 @@ mod tests {
         let mut ingestor = Rosbag2Ingestor::new(Rosbag2IngestorConfig::without_metadata());
         let mut context = ingestor.run(context).unwrap();
 
-        // Set video_cache_dir but NOT airoa_metadata
+        // Set video_cache_dir but NOT moma_metadata
         let video_cache_dir = tempdir().unwrap();
         let video_cache_path =
             Utf8PathBuf::from_path_buf(video_cache_dir.path().to_path_buf()).unwrap();
@@ -3503,11 +3503,11 @@ mod tests {
         // Run the encoder stage - should fail because metadata is missing
         let result = encoder.run(context);
         match result {
-            Ok(_) => panic!("Should fail without airoa_metadata"),
+            Ok(_) => panic!("Should fail without moma_metadata"),
             Err(err) => {
                 assert!(
-                    err.reason().contains("airoa_metadata"),
-                    "Error should mention airoa_metadata: {}",
+                    err.reason().contains("moma_metadata"),
+                    "Error should mention moma_metadata: {}",
                     err.reason()
                 );
             }
@@ -4481,8 +4481,8 @@ unknown_option: true
 
         let mut context = crate::core::Context::default();
         // image_data is not set (None)
-        // airoa_metadata is required, so set it (requires argument)
-        context.set_airoa_metadata(AiroaMetadata::V2_0(create_test_metadata(
+        // moma_metadata is required, so set it (requires argument)
+        context.set_moma_metadata(MomaMetadata::V2_0(create_test_metadata(
             "missing-image-data",
         )));
         context.set_video_cache_dir(output_dir);

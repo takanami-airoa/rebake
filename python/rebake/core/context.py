@@ -358,33 +358,33 @@ class Context:
         """
         self._inner.fps = value
 
-    def get_airoa_metadata(self) -> dict[str, Any] | None:
-        """Get the airoa metadata (from meta.json).
+    def get_moma_metadata(self) -> dict[str, Any] | None:
+        """Get the moma metadata (from meta.json).
 
         The metadata contains information about the rosbag recording,
         including UUID plus either legacy V1.3 fields or canonical V2.0
         fields, depending on what is currently stored in the Context.
 
         Returns:
-            A dictionary containing the airoa metadata, or None if not set.
+            A dictionary containing the moma metadata, or None if not set.
 
         Examples:
             ```python
-            metadata = context.get_airoa_metadata()
+            metadata = context.get_moma_metadata()
             if metadata:
                 print(f"UUID: {metadata['uuid']}")
                 print(f"Version: {metadata['version']}")
             ```
         """
-        json_str = self._inner.get_airoa_metadata_json()
+        json_str = self._inner.get_moma_metadata_json()
         if json_str is None:
             return None
         return json.loads(json_str)
 
-    def set_airoa_metadata(
+    def set_moma_metadata(
         self, metadata: dict[str, Any] | _internal.core.MetadataV2_0
     ) -> None:
-        """Set the airoa metadata.
+        """Set the moma metadata.
 
         Accepts either a typed ``MetadataV2_0`` instance (recommended) or a
         dictionary (back-compat path; also supports the legacy V1.3 schema).
@@ -403,17 +403,17 @@ class Context:
                 episode=Episode(label="pick and place"),
                 files=[File(name="bag.mcap")],
             )
-            context.set_airoa_metadata(m)
+            context.set_moma_metadata(m)
             ```
         """
         if isinstance(metadata, _internal.core.MetadataV2_0):
-            self._inner.set_airoa_metadata(metadata)
+            self._inner.set_moma_metadata(metadata)
         else:
             json_str = json.dumps(metadata, ensure_ascii=False)
-            self._inner.set_airoa_metadata_json(json_str)
+            self._inner.set_moma_metadata_json(json_str)
 
     def get_metadata_record_batch(self) -> pa.RecordBatch:
-        """Get the airoa metadata as an Arrow RecordBatch.
+        """Get the moma metadata as an Arrow RecordBatch.
 
         This method returns the metadata in a format that preserves
         the full nested structure, making it suitable for writing

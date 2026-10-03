@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Utility for converting every meta.json under a directory tree to AIROA metadata
+Utility for converting every meta.json under a directory tree to MOMA metadata
 v1.3 (or another specified target version).
 
 Usage examples:
@@ -18,7 +18,7 @@ import shutil
 from pathlib import Path
 from typing import Dict, Any, List
 
-from airoa_metadata import (
+from moma_metadata import (
     MetadataV0_0, MetadataV1_0, MetadataV1_1, MetadataV1_2, MetadataV1_3,
     MetadataLoader
 )
@@ -29,9 +29,9 @@ logger = logging.getLogger(__name__)
 
 # External git repo mapping for components
 GIT_REPO_MAPPING = {
-    "data_collection": "https://github.com/airoa-org/hsr_data_collection.git",
-    "data_capture": "https://github.com/airoa-org/hsr_data_collection.git", 
-    "interface": "https://github.com/airoa-org/hsr_leader_teleop.git"
+    "data_collection": "https://github.com/anonymous-org/hsr_data_collection.git",
+    "data_capture": "https://github.com/anonymous-org/hsr_data_collection.git", 
+    "interface": "https://github.com/anonymous-org/hsr_leader_teleop.git"
 }
 
 
@@ -191,7 +191,7 @@ def convert_metadata(input_file: Path, target_version: str, output_file: Path = 
     
     # Add $schema field for v1.3
     if target_version == "1.3":
-        converted_dict["$schema"] = "https://raw.githubusercontent.com/airoa-org/airoa-metadata/refs/tags/v1.3/airoa_metadata/schemas/v1_3.json"
+        converted_dict["$schema"] = "https://raw.githubusercontent.com/anonymous-org/moma-metadata/refs/tags/v1.3/moma_metadata/schemas/v1_3.json"
     
     converted_dict = remove_null_values(converted_dict)
     
@@ -265,7 +265,7 @@ def process_meta_files(root: Path, target_version: str) -> None:
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Recursively convert meta.json files to the desired AIROA metadata version",
+        description="Recursively convert meta.json files to the desired MOMA metadata version",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:

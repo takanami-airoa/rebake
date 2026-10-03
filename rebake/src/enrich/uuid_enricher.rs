@@ -26,7 +26,7 @@ impl StageConfig for UuidEnricherConfig {
 
 /// A stage that adds a `rosbag_uuid` column to all DataFrames in the context.
 ///
-/// This enricher reads the UUID from the airoa metadata (meta.json) that was loaded
+/// This enricher reads the UUID from the moma metadata (meta.json) that was loaded
 /// by the Ingestor, and adds it as a column to every topic's DataFrame.
 ///
 /// This enables tracking which rosbag each record came from when multiple rosbags
@@ -35,7 +35,7 @@ impl StageConfig for UuidEnricherConfig {
 /// # Preconditions
 ///
 /// - `dataset`: **Required** (all topics as LazyFrame)
-/// - `airoa_metadata`: Conditional (if missing, stage is skipped)
+/// - `moma_metadata`: Conditional (if missing, stage is skipped)
 ///
 /// # Postconditions
 ///
@@ -43,7 +43,7 @@ impl StageConfig for UuidEnricherConfig {
 ///
 /// # Errors
 ///
-/// - [`StageError::Skip`]: `airoa_metadata` not found in context (stage skipped gracefully)
+/// - [`StageError::Skip`]: `moma_metadata` not found in context (stage skipped gracefully)
 /// - [`StageError::MissingData`]: `dataset` not set in context
 pub struct UuidEnricher;
 
@@ -60,10 +60,10 @@ impl Stage for UuidEnricher {
 
     fn run(&mut self, mut context: Context) -> Result<Context, StageError> {
         let uuid = context
-            .airoa_metadata()
+            .moma_metadata()
             .map(|m| m.uuid_string())
             .ok_or_else(|| {
-                StageError::skip("airoa_metadata not found in context, skipping UUID enrichment")
+                StageError::skip("moma_metadata not found in context, skipping UUID enrichment")
             })?;
 
         let dataset = context.dataset.take().or_missing("dataset in context")?;
@@ -87,7 +87,7 @@ mod tests {
     use super::*;
     use std::collections::HashMap;
 
-    use crate::schema::metadata::AiroaMetadata;
+    use crate::schema::metadata::MomaMetadata;
     use crate::schema::metadata::v2_0::{
         Device, EnvType, Environment, Episode, File, GitSource, MetadataV2_0, Program, Robot,
         Runner, RunnerType, Segment, Source,
@@ -166,7 +166,7 @@ mod tests {
         dataset.insert("/test_topic".to_string(), df);
 
         let mut context = Context::new(dataset);
-        context.set_airoa_metadata(AiroaMetadata::V2_0(create_test_metadata()));
+        context.set_moma_metadata(MomaMetadata::V2_0(create_test_metadata()));
 
         let mut enricher = UuidEnricher::new(UuidEnricherConfig::new());
         let result = enricher.run(context).unwrap();
@@ -193,7 +193,7 @@ mod tests {
         );
     }
 
-    /// Edge case: returns Skip error (normal skip) when airoa_metadata does not exist
+    /// Edge case: returns Skip error (normal skip) when moma_metadata does not exist
     #[test]
     fn test_enrich_skips_when_no_metadata() {
         let df = df! {
@@ -207,7 +207,7 @@ mod tests {
         dataset.insert("/test_topic".to_string(), df);
 
         let context = Context::new(dataset);
-        // airoa_metadata is NOT set
+        // moma_metadata is NOT set
 
         let mut enricher = UuidEnricher::new(UuidEnricherConfig::new());
         let result = enricher.run(context);

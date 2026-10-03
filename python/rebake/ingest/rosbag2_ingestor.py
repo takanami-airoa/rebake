@@ -57,8 +57,8 @@ class Rosbag2IngestorConfig(BaseModel):
     and converts them to structured data in the Context.
 
     Args:
-        require_metadata: Whether to require meta.json (airoa metadata).
-            Defaults to True. Set to False for testing or non-airoa rosbags.
+        require_metadata: Whether to require meta.json (moma metadata).
+            Defaults to True. Set to False for testing or non-moma rosbags.
 
     Examples:
         ```python
@@ -174,7 +174,7 @@ class Rosbag2Ingestor:
             A tuple of (topics, metadata, image_data, topic_message_type_map) where:
 
             - topics: Dictionary mapping topic names to Arrow Tables
-            - metadata: Airoa metadata as a Python dictionary
+            - metadata: Moma metadata as a Python dictionary
             - image_data: Dictionary mapping topic names to lists of PyImageFrame
             - topic_message_type_map: Dictionary mapping topic names to ROS message
               types (e.g., "/joint_states" -> "sensor_msgs/msg/JointState")
@@ -213,7 +213,7 @@ class Rosbag2Ingestor:
         }
 
         # Get metadata as dict
-        metadata = context.get_airoa_metadata() or {}
+        metadata = context.get_moma_metadata() or {}
 
         # Get image data
         image_data = context.get_image_data() or {}

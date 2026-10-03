@@ -24,7 +24,7 @@ Ingestor は既定でこれを読みます（`require_metadata: true` 相当）�
 
 ```json
 {
-  "$schema": "https://raw.githubusercontent.com/airoa-org/airoa-metadata/main/airoa_metadata/schemas/v2_0.json",
+  "$schema": "https://raw.githubusercontent.com/anonymous-org/moma-metadata/main/moma_metadata/schemas/v2_0.json",
   "schema_version": "2.0",
   "uuid": "123e4567-e89b-12d3-a456-426614174000",
   "robot": {
@@ -155,7 +155,7 @@ Ingestor は既定でこれを読みます（`require_metadata: true` 相当）�
 | エラー文に含まれる断片 | 原因 | 直し方 |
 |---|---|---|
 | `failed to read meta.json` | ROS bag の隣に `meta.json` が無い | 同じディレクトリに置く（サブフォルダ不可） |
-| `missing required data: airoa_metadata` | メタデータ必須のステージが、読み込まずに動いた | `require_metadata: true` に戻すか、そのステージを外す |
+| `missing required data: moma_metadata` | メタデータ必須のステージが、読み込まずに動いた | `require_metadata: true` に戻すか、そのステージを外す |
 | `skipped:` で実行が止まる | `UuidEnricherConfig` がメタデータなしで走った | `meta.json` を置くか、このステージを外す |
 | `no segments overlap` | セグメントの時刻が録画と重ならない | 秒の時計を確認。Synchronizer が入っているかも確認 |
 | program や git のフィールド名を含む missing 系 | `programs[]` の 2 役が揃っていない | `interface` と `data_collection` を `source.git` 付きで書く |

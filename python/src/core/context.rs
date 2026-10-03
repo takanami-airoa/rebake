@@ -11,7 +11,7 @@ use pyo3::{Bound, IntoPyObject};
 use rebake::core::conversion::{lazy_to_record_batch_rechunk, record_batch_to_lazy};
 use rebake::core::stage::Context;
 use rebake::encode::video_artifact::VideoArtifact;
-use rebake::schema::metadata::arrow::airoa_metadata_to_record_batch;
+use rebake::schema::metadata::arrow::moma_metadata_to_record_batch;
 use rebake::schema::metadata::parse_metadata;
 
 #[pyclass(module = "rebake.core")]
@@ -216,9 +216,9 @@ impl PyContext {
         });
     }
 
-    /// Get the airoa metadata as a JSON string.
-    pub fn get_airoa_metadata_json(&self) -> PyResult<Option<String>> {
-        match &self.inner.airoa_metadata {
+    /// Get the moma metadata as a JSON string.
+    pub fn get_moma_metadata_json(&self) -> PyResult<Option<String>> {
+        match &self.inner.moma_metadata {
             Some(metadata) => {
                 let json = serde_json::to_string(metadata).map_err(|e| {
                     PyRuntimeError::new_err(format!("Failed to serialize metadata: {e}"))
@@ -229,38 +229,38 @@ impl PyContext {
         }
     }
 
-    /// Set the airoa metadata from a JSON string.
+    /// Set the moma metadata from a JSON string.
     ///
     /// Supports both V1.3 and V2.0 metadata formats. The metadata is stored
     /// in its original format and converted to V2.0 when needed.
     /// V2.0 inputs are validated against schema constraints at this boundary.
-    pub fn set_airoa_metadata_json(&mut self, json: &str) -> PyResult<()> {
+    pub fn set_moma_metadata_json(&mut self, json: &str) -> PyResult<()> {
         let metadata = parse_metadata(json)
             .map_err(|e| PyRuntimeError::new_err(format!("Failed to parse metadata JSON: {e}")))?;
-        if let rebake::schema::metadata::AiroaMetadata::V2_0(ref v2) = metadata {
+        if let rebake::schema::metadata::MomaMetadata::V2_0(ref v2) = metadata {
             crate::core::metadata::validate_metadata(v2)?;
         }
-        self.inner.set_airoa_metadata(metadata);
+        self.inner.set_moma_metadata(metadata);
         Ok(())
     }
 
-    /// Set the airoa metadata directly from a typed MetadataV2_0 object.
+    /// Set the moma metadata directly from a typed MetadataV2_0 object.
     ///
     /// Boundary validation runs here: if the metadata violates schema
     /// constraints (e.g. empty files, missing episode label), a ValueError
     /// is raised before the metadata reaches downstream stages.
-    pub fn set_airoa_metadata(
+    pub fn set_moma_metadata(
         &mut self,
         metadata: crate::core::metadata::PyMetadataV2_0,
     ) -> PyResult<()> {
         let inner: rebake::schema::metadata::v2_0::MetadataV2_0 = metadata.into();
         crate::core::metadata::validate_metadata(&inner)?;
         self.inner
-            .set_airoa_metadata(rebake::schema::metadata::AiroaMetadata::V2_0(inner));
+            .set_moma_metadata(rebake::schema::metadata::MomaMetadata::V2_0(inner));
         Ok(())
     }
 
-    /// Get the airoa metadata as an Arrow RecordBatch.
+    /// Get the moma metadata as an Arrow RecordBatch.
     ///
     /// This preserves the metadata in its original format (V1.3 or V2.0).
     /// The Arrow schema will match the stored version.
@@ -277,10 +277,10 @@ impl PyContext {
     pub fn get_metadata_record_batch(&self) -> PyResult<PyArrowType<RecordBatch>> {
         let metadata = self
             .inner
-            .airoa_metadata
+            .moma_metadata
             .as_ref()
             .ok_or_else(|| PyRuntimeError::new_err("no metadata available"))?;
-        let batch = airoa_metadata_to_record_batch(metadata)
+        let batch = moma_metadata_to_record_batch(metadata)
             .map_err(|e| PyRuntimeError::new_err(format!("Failed to convert metadata: {e}")))?;
         Ok(PyArrowType(batch))
     }

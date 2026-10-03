@@ -21,8 +21,8 @@ use tempfile::tempdir;
 /// Configuration for the `Rosbag1Ingestor` stage.
 #[derive(Clone, Debug, Deserialize, Serialize)]
 pub struct Rosbag1IngestorConfig {
-    /// Whether to require meta.json (airoa metadata) to be present.
-    /// Defaults to true. Set to false for testing or non-airoa rosbags.
+    /// Whether to require meta.json (moma metadata) to be present.
+    /// Defaults to true. Set to false for testing or non-moma rosbags.
     #[serde(default = "default_require_metadata")]
     pub require_metadata: bool,
 }
@@ -105,7 +105,7 @@ impl StageConfig for Rosbag1IngestorConfig {
 /// - `pointcloud_data`: Conditional (if point cloud topics exist)
 /// - `output_dir`: **Guaranteed** (temp directory path)
 /// - `topic_message_type_map`: **Guaranteed**
-/// - `airoa_metadata`: Conditional (depends on `require_metadata` setting)
+/// - `moma_metadata`: Conditional (depends on `require_metadata` setting)
 ///
 /// # Errors
 ///
@@ -279,7 +279,7 @@ impl Stage for Rosbag1Ingestor {
         context.set_rosbag_path(rosbag_path.clone());
         context.set_topic_message_type_map(topic_message_type_map);
 
-        // Load airoa metadata (meta.json) if required
+        // Load moma metadata (meta.json) if required
         // Supports both V1.3 and V2.0 formats, converting V1.3 to V2.0 automatically.
         if self.require_metadata {
             let parent = rosbag_path
@@ -289,14 +289,14 @@ impl Stage for Rosbag1Ingestor {
             let meta_content = fs::read_to_string(meta_path.as_std_path()).map_err(|e| {
                 StageError::io(
                     format!(
-                        "failed to read meta.json at {} - airoa metadata is required",
+                        "failed to read meta.json at {} - moma metadata is required",
                         meta_path
                     ),
                     e,
                 )
             })?;
             let metadata = parse_metadata(&meta_content)?;
-            context.set_airoa_metadata(metadata);
+            context.set_moma_metadata(metadata);
         }
 
         Ok(context)
@@ -313,7 +313,7 @@ mod tests {
 
     #[test]
     #[ignore = "requires external fixture file"]
-    fn test_convert_rosbag_to_airoa_format() {
+    fn test_convert_rosbag_to_moma_format() {
         let rosbag_path = crate::test_utils::rosbag_path().clone();
 
         let mut ingestor = Rosbag1IngestorConfig::without_metadata().build();

@@ -6,7 +6,7 @@ use polars::prelude::LazyFrame;
 
 use crate::common::{DepthFrame, ImageFrame, ImageShape, PointCloudFrame};
 use crate::encode::video_artifact::VideoArtifact;
-use crate::schema::metadata::AiroaMetadata;
+use crate::schema::metadata::MomaMetadata;
 
 // Re-export StageError for backward compatibility
 pub use crate::core::error::StageError;
@@ -73,7 +73,7 @@ pub struct Context {
     pub bundle_root: Option<Utf8PathBuf>,
     pub video_registry: Option<HashMap<String, VideoArtifact>>,
     pub topic_message_type_map: Option<HashMap<String, String>>,
-    pub airoa_metadata: Option<AiroaMetadata>,
+    pub moma_metadata: Option<MomaMetadata>,
 }
 
 impl Context {
@@ -91,7 +91,7 @@ impl Context {
             bundle_root: None,
             video_registry: None,
             topic_message_type_map: None,
-            airoa_metadata: None,
+            moma_metadata: None,
         }
     }
 
@@ -259,17 +259,17 @@ impl Context {
         self.topic_message_type_map.as_ref()
     }
 
-    pub fn set_airoa_metadata(&mut self, metadata: AiroaMetadata) {
-        self.airoa_metadata = Some(metadata);
+    pub fn set_moma_metadata(&mut self, metadata: MomaMetadata) {
+        self.moma_metadata = Some(metadata);
     }
 
-    pub fn airoa_metadata(&self) -> Option<&AiroaMetadata> {
-        self.airoa_metadata.as_ref()
+    pub fn moma_metadata(&self) -> Option<&MomaMetadata> {
+        self.moma_metadata.as_ref()
     }
 
-    /// Take ownership of the airoa metadata, leaving None in its place.
-    pub fn take_airoa_metadata(&mut self) -> Option<AiroaMetadata> {
-        self.airoa_metadata.take()
+    /// Take ownership of the moma metadata, leaving None in its place.
+    pub fn take_moma_metadata(&mut self) -> Option<MomaMetadata> {
+        self.moma_metadata.take()
     }
 
     /// Save the context dataset to Parquet files.

@@ -39,7 +39,7 @@ static INGEST_FIXTURE: OnceCell<IngestFixture> = OnceCell::new();
 pub fn ingest_fixture() -> &'static IngestFixture {
     INGEST_FIXTURE.get_or_init(|| {
         let manifest_dir = Utf8PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-        let rosbag_path = manifest_dir.join("../airoa-moma-raw/000730/data.bag");
+        let rosbag_path = manifest_dir.join("../moma-raw/000730/data.bag");
 
         let mut context = Context::default();
         context.set_rosbag_path(rosbag_path.clone());

@@ -111,7 +111,7 @@ mod tests {
                     "name": "hsr_leader_teleop",
                     "source": {
                     "git": {
-                        "uri": "https://github.com/airoa-org/hsr_leader_teleop.git",
+                        "uri": "https://github.com/anonymous-org/hsr_leader_teleop.git",
                         "hash": "v7.0.0",
                         "branch": "HEAD"
                     }
@@ -122,7 +122,7 @@ mod tests {
                     "name": "rosbag_manager",
                     "source": {
                     "git": {
-                        "uri": "https://github.com/airoa-org/hsr_data_collection.git",
+                        "uri": "https://github.com/anonymous-org/hsr_data_collection.git",
                         "hash": "v4.0.0",
                         "branch": "develop"
                     }
@@ -256,7 +256,7 @@ mod tests {
                 ],
                 "episode_label": "Operator003"
             },
-            "$schema": "https://raw.githubusercontent.com/airoa-org/airoa-metadata/refs/tags/v1.3/airoa_metadata/schemas/v1_3.json"
+            "$schema": "https://raw.githubusercontent.com/anonymous-org/moma-metadata/refs/tags/v1.3/moma_metadata/schemas/v1_3.json"
             }
         "#;
         let metadata: MetadataV1_3 = serde_json::from_str(metadata).unwrap();
@@ -314,7 +314,7 @@ mod tests {
                 "name": "record_manager",
                 "source": {
                 "git": {
-                    "uri": "https://github.com/airoa-org/hsrf_data_collection",
+                    "uri": "https://github.com/anonymous-org/hsrf_data_collection",
                     "hash": "",
                     "branch": ""
                 }

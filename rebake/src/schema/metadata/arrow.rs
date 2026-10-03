@@ -2,7 +2,7 @@ use arrow::datatypes::FieldRef;
 use arrow::record_batch::RecordBatch;
 use serde_arrow::schema::{SchemaLike, TracingOptions};
 
-use super::AiroaMetadata;
+use super::MomaMetadata;
 use super::v1_3::MetadataV1_3;
 use super::v2_0::MetadataV2_0;
 use crate::core::StageError;
@@ -57,7 +57,7 @@ pub fn v1_3_metadata_to_record_batch(metadata: &MetadataV1_3) -> Result<RecordBa
     })
 }
 
-/// Convert AiroaMetadata to an Arrow RecordBatch.
+/// Convert MomaMetadata to an Arrow RecordBatch.
 ///
 /// Dispatches to version-specific functions:
 /// - V1.3: Uses `v1_3_metadata_to_record_batch`
@@ -65,10 +65,10 @@ pub fn v1_3_metadata_to_record_batch(metadata: &MetadataV1_3) -> Result<RecordBa
 ///
 /// Both versions use `from_type` for compile-time schema inference,
 /// ensuring `Option<T>` fields always get the correct nullable type.
-pub fn airoa_metadata_to_record_batch(metadata: &AiroaMetadata) -> Result<RecordBatch, StageError> {
+pub fn moma_metadata_to_record_batch(metadata: &MomaMetadata) -> Result<RecordBatch, StageError> {
     match metadata {
-        AiroaMetadata::V1_3(v1_3) => v1_3_metadata_to_record_batch(v1_3),
-        AiroaMetadata::V2_0(v2_0) => metadata_to_record_batch(v2_0),
+        MomaMetadata::V1_3(v1_3) => v1_3_metadata_to_record_batch(v1_3),
+        MomaMetadata::V2_0(v2_0) => metadata_to_record_batch(v2_0),
     }
 }
 

@@ -57,7 +57,7 @@ pub(crate) fn validate_metadata(m: &CoreMetadataV2_0) -> PyResult<()> {
 }
 
 const V2_0_SCHEMA_URL: &str =
-    "https://raw.githubusercontent.com/airoa-org/airoa-metadata/main/airoa_metadata/schemas/v2_0.json";
+    "https://raw.githubusercontent.com/anonymous-org/moma-metadata/main/moma_metadata/schemas/v2_0.json";
 
 // =============================================================================
 // parse_metadata_as_v2_0 (back-compat helper)

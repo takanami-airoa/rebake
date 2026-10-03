@@ -34,7 +34,7 @@ pub struct Episodes {
     pub primitive_action: Vec<String>,
     pub success_short_horizon_task: bool,
     pub uuid: String,
-    /// Full metadata from airoa meta.json (V2.0 format).
+    /// Full metadata from moma meta.json (V2.0 format).
     /// Contains robot, environment, runner, programs, episode, segments, labels, etc.
     pub metadata: MetadataV2_0,
 }

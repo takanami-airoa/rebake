@@ -479,7 +479,7 @@ impl StageConfig for DepthVideoConfig {
 ///
 /// # Preconditions
 ///
-/// - `airoa_metadata`: **Required** (for UUID-based output directory)
+/// - `moma_metadata`: **Required** (for UUID-based output directory)
 /// - `depth_data`: Conditional (if missing, stage returns early with no action)
 ///
 /// # Postconditions
@@ -525,9 +525,9 @@ impl Stage for DepthVideoEncoder {
         };
 
         let uuid = context
-            .airoa_metadata()
+            .moma_metadata()
             .map(|m| m.uuid_string())
-            .or_missing("airoa_metadata in context (did Rosbag2Ingestor load meta.json?)")?;
+            .or_missing("moma_metadata in context (did Rosbag2Ingestor load meta.json?)")?;
 
         let video_cache_dir = base_video_cache_dir.join(&uuid);
 

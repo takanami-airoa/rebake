@@ -4,7 +4,7 @@ use std::collections::HashMap;
 
 use super::v1_3::{self, MetadataV1_3};
 
-const V2_0_SCHEMA_URL: &str = "https://raw.githubusercontent.com/airoa-org/airoa-metadata/main/airoa_metadata/schemas/v2_0.json";
+const V2_0_SCHEMA_URL: &str = "https://raw.githubusercontent.com/anonymous-org/moma-metadata/main/moma_metadata/schemas/v2_0.json";
 
 #[derive(Debug, Clone, PartialEq, Serialize, JsonSchema, Deserialize)]
 pub struct MetadataV2_0 {
@@ -91,7 +91,7 @@ pub struct Runner {
     #[serde(rename = "type")]
     #[schemars(description = "Runner type (e.g. operator or model).")]
     pub runner_type: RunnerType,
-    #[schemars(description = "Organization of the runner (e.g. airoa). Empty if unavailable.")]
+    #[schemars(description = "Organization of the runner (e.g. moma). Empty if unavailable.")]
     pub organization: String,
     #[schemars(description = "Name of the runner (e.g. TarouTanaka).")]
     pub name: String,

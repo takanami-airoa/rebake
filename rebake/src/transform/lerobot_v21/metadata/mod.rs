@@ -81,14 +81,14 @@ impl<'a> MetadataComposer<'a> {
         df: &DataFrame,
         _video_stats: &HashMap<String, VideoStats>,
         outdir: &Utf8Path,
-        airoa_metadata: &MetadataV2_0,
+        moma_metadata: &MetadataV2_0,
         data_path_template: &str,
         video_path_template: &str,
         version: &str,
         total_videos: usize,
     ) -> Result<LeRobotTasksVec, StageError> {
         self.metadata.info.codebase_version = version.to_string();
-        self.metadata.info.robot_type = airoa_metadata.robot.robot_type.clone();
+        self.metadata.info.robot_type = moma_metadata.robot.robot_type.clone();
         self.metadata.info.total_episodes = 1;
         self.metadata.info.total_frames = df.height();
         self.metadata.info.total_tasks = self.metadata.tasks.task_to_task_index.len();
@@ -259,7 +259,7 @@ impl<'a> MetadataComposer<'a> {
     pub fn build_episode(
         &self,
         df: &DataFrame,
-        airoa_metadata: &MetadataV2_0,
+        moma_metadata: &MetadataV2_0,
         lerobot_tasks: &LeRobotTasksVec,
         last_segment_success: bool,
         version: &str,
@@ -267,37 +267,37 @@ impl<'a> MetadataComposer<'a> {
         default_task_type: &str,
     ) -> Result<Episodes, StageError> {
         // Find interface (teleoperation) program
-        let interface_program = airoa_metadata
+        let interface_program = moma_metadata
             .programs
             .iter()
             .find(|p| p.role == "interface" || p.role == "teleoperation")
             .or_missing(
-                "program with role 'interface' or 'teleoperation' in airoa_metadata.programs \
+                "program with role 'interface' or 'teleoperation' in moma_metadata.programs \
                  (required for git source info in episode metadata)",
             )?;
         let interface_git_info = interface_program
             .source
             .git
             .clone()
-            .or_missing("git info for interface program in airoa_metadata")?;
+            .or_missing("git info for interface program in moma_metadata")?;
 
         // Find data_collection program
-        let data_collection_program = airoa_metadata
+        let data_collection_program = moma_metadata
             .programs
             .iter()
             .find(|p| p.role == "data_collection" || p.role == "data_capture")
-            .or_missing("program with role 'data_collection' in airoa_metadata.programs")?;
+            .or_missing("program with role 'data_collection' in moma_metadata.programs")?;
         let data_collection_git_info = data_collection_program
             .source
             .git
             .clone()
-            .or_missing("git info for data_collection program in airoa_metadata")?;
+            .or_missing("git info for data_collection program in moma_metadata")?;
 
         // Primitive actions are from labels, SHT is from episode label
-        let (primitive_action, short_horizon_task) = if !airoa_metadata.episode.label.is_empty() {
+        let (primitive_action, short_horizon_task) = if !moma_metadata.episode.label.is_empty() {
             (
-                airoa_metadata.labels.clone(),
-                vec![airoa_metadata.episode.label.clone()],
+                moma_metadata.labels.clone(),
+                vec![moma_metadata.episode.label.clone()],
             )
         } else if lerobot_tasks.tasks.len() > 1 {
             (
@@ -322,8 +322,8 @@ impl<'a> MetadataComposer<'a> {
             (vec![first_task.task.clone()], vec![])
         };
 
-        // Get bag filename from airoa_metadata.files
-        let bag_file_name = airoa_metadata
+        // Get bag filename from moma_metadata.files
+        let bag_file_name = moma_metadata
             .files
             .iter()
             .find(|file| {
@@ -332,17 +332,17 @@ impl<'a> MetadataComposer<'a> {
                     || file.file_type == "mcap"
             })
             .map(|file| file.name.clone())
-            .or_missing("file with type 'rosbag' or 'rosbag2' in airoa_metadata.files")?;
+            .or_missing("file with type 'rosbag' or 'rosbag2' in moma_metadata.files")?;
 
         // Location from environment
-        let location_name = airoa_metadata.environment.site.clone();
+        let location_name = moma_metadata.environment.site.clone();
 
         // Robot ID from robot
-        let hsr_id = airoa_metadata.robot.id.clone();
+        let hsr_id = moma_metadata.robot.id.clone();
 
         Ok(Episodes {
             episode_index: 0,
-            episode_id: format_episode_id(&airoa_metadata.uuid, None),
+            episode_id: format_episode_id(&moma_metadata.uuid, None),
             tasks: primitive_action.clone(),
             length: df.height(),
             bag_path: bag_file_name,
@@ -362,8 +362,8 @@ impl<'a> MetadataComposer<'a> {
             short_horizon_task,
             primitive_action,
             success_short_horizon_task: last_segment_success,
-            uuid: airoa_metadata.uuid.to_string(),
-            metadata: airoa_metadata.clone(),
+            uuid: moma_metadata.uuid.to_string(),
+            metadata: moma_metadata.clone(),
         })
     }
 
@@ -373,7 +373,7 @@ impl<'a> MetadataComposer<'a> {
     pub fn build_episode_for_pa(
         &self,
         df: &DataFrame,
-        airoa_metadata: &MetadataV2_0,
+        moma_metadata: &MetadataV2_0,
         lerobot_tasks: &LeRobotTasksVec,
         segment_success: bool,
         version: &str,
@@ -384,34 +384,34 @@ impl<'a> MetadataComposer<'a> {
         task_name: &str,
     ) -> Result<Episodes, StageError> {
         // Find interface (teleoperation) program
-        let interface_program = airoa_metadata
+        let interface_program = moma_metadata
             .programs
             .iter()
             .find(|p| p.role == "interface" || p.role == "teleoperation")
             .or_missing(
-                "program with role 'interface' or 'teleoperation' in airoa_metadata.programs \
+                "program with role 'interface' or 'teleoperation' in moma_metadata.programs \
                  (required for git source info in episode metadata)",
             )?;
         let interface_git_info = interface_program
             .source
             .git
             .clone()
-            .or_missing("git info for interface program in airoa_metadata")?;
+            .or_missing("git info for interface program in moma_metadata")?;
 
         // Find data_collection program
-        let data_collection_program = airoa_metadata
+        let data_collection_program = moma_metadata
             .programs
             .iter()
             .find(|p| p.role == "data_collection" || p.role == "data_capture")
-            .or_missing("program with role 'data_collection' in airoa_metadata.programs")?;
+            .or_missing("program with role 'data_collection' in moma_metadata.programs")?;
         let data_collection_git_info = data_collection_program
             .source
             .git
             .clone()
-            .or_missing("git info for data_collection program in airoa_metadata")?;
+            .or_missing("git info for data_collection program in moma_metadata")?;
 
-        // Get bag filename from airoa_metadata.files
-        let bag_file_name = airoa_metadata
+        // Get bag filename from moma_metadata.files
+        let bag_file_name = moma_metadata
             .files
             .iter()
             .find(|file| {
@@ -420,13 +420,13 @@ impl<'a> MetadataComposer<'a> {
                     || file.file_type == "mcap"
             })
             .map(|file| file.name.clone())
-            .or_missing("file with type 'rosbag' or 'rosbag2' in airoa_metadata.files")?;
+            .or_missing("file with type 'rosbag' or 'rosbag2' in moma_metadata.files")?;
 
         // Location from environment
-        let location_name = airoa_metadata.environment.site.clone();
+        let location_name = moma_metadata.environment.site.clone();
 
         // Robot ID from robot
-        let hsr_id = airoa_metadata.robot.id.clone();
+        let hsr_id = moma_metadata.robot.id.clone();
 
         // In PA mode, each episode has a single primitive action
         let primitive_action = vec![task_name.to_string()];
@@ -446,7 +446,7 @@ impl<'a> MetadataComposer<'a> {
 
         Ok(Episodes {
             episode_index,
-            episode_id: format_episode_id(&airoa_metadata.uuid, Some(source_segment_index)),
+            episode_id: format_episode_id(&moma_metadata.uuid, Some(source_segment_index)),
             tasks: primitive_action.clone(),
             length: df.height(),
             bag_path: bag_file_name,
@@ -466,8 +466,8 @@ impl<'a> MetadataComposer<'a> {
             short_horizon_task,
             primitive_action,
             success_short_horizon_task: segment_success,
-            uuid: airoa_metadata.uuid.to_string(),
-            metadata: airoa_metadata.clone(),
+            uuid: moma_metadata.uuid.to_string(),
+            metadata: moma_metadata.clone(),
         })
     }
 
@@ -478,7 +478,7 @@ impl<'a> MetadataComposer<'a> {
         df: &DataFrame,
         _video_stats: &HashMap<String, VideoStats>,
         outdir: &Utf8Path,
-        airoa_metadata: &MetadataV2_0,
+        moma_metadata: &MetadataV2_0,
         data_path_template: &str,
         video_path_template: &str,
         version: &str,
@@ -487,7 +487,7 @@ impl<'a> MetadataComposer<'a> {
         total_videos: usize,
     ) -> Result<LeRobotTasksVec, StageError> {
         self.metadata.info.codebase_version = version.to_string();
-        self.metadata.info.robot_type = airoa_metadata.robot.robot_type.clone();
+        self.metadata.info.robot_type = moma_metadata.robot.robot_type.clone();
         self.metadata.info.total_episodes = total_episodes;
         self.metadata.info.total_frames = total_frames;
         self.metadata.info.total_tasks = self.metadata.tasks.task_to_task_index.len();
@@ -557,7 +557,7 @@ mod info_tests {
             },
             runner: Runner {
                 runner_type: RunnerType::Operator,
-                organization: "airoa".to_string(),
+                organization: "moma".to_string(),
                 name: "tester".to_string(),
             },
             devices: vec![Device {
@@ -607,7 +607,7 @@ mod info_tests {
             10,
         );
         let df = df! { "value" => [1_i32, 2, 3] }.unwrap();
-        let airoa_metadata = sample_metadata("yubi");
+        let moma_metadata = sample_metadata("yubi");
         let temp_dir = tempdir().unwrap();
         let outdir = Utf8PathBuf::from_path_buf(temp_dir.path().to_path_buf()).unwrap();
 
@@ -616,7 +616,7 @@ mod info_tests {
                 &df,
                 &HashMap::new(),
                 &outdir,
-                &airoa_metadata,
+                &moma_metadata,
                 "data/chunk-{episode_chunk:03d}/episode_{episode_index:06d}.parquet",
                 "videos/chunk-{episode_chunk:03d}/{video_key}/episode_{episode_index:06d}.mp4",
                 "v2.1",

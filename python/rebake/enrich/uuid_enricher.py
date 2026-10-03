@@ -16,7 +16,7 @@ class UuidEnricherConfig(BaseModel):
     """Configuration for the UUID enricher.
 
     This enricher adds a `rosbag_uuid` column to all topics in the dataset.
-    The UUID is read from the airoa metadata (meta.json) that was loaded
+    The UUID is read from the moma metadata (meta.json) that was loaded
     during ingestion.
 
     This class provides two methods for processing data:
@@ -51,7 +51,7 @@ class UuidEnricherConfig(BaseModel):
 class UuidEnricher:
     """Adds rosbag_uuid column to all topics in the dataset.
 
-    This enricher reads the UUID from the airoa metadata (meta.json) that was
+    This enricher reads the UUID from the moma metadata (meta.json) that was
     loaded by the Ingestor, and adds it as a column to every topic's DataFrame.
 
     This enables tracking which rosbag each record came from when multiple
@@ -106,7 +106,7 @@ class UuidEnricher:
 
         Args:
             table: Arrow Table to enrich.
-            metadata: Airoa metadata dictionary containing the 'uuid' field.
+            metadata: Moma metadata dictionary containing the 'uuid' field.
 
         Returns:
             Arrow Table with rosbag_uuid column added.

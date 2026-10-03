@@ -97,7 +97,7 @@ A pipeline is a sequence of **stages** sharing a **context**, configured in YAML
 - **Pre-1.0:** see the SemVer note above — expect breaking changes in 0.x.
 - **HSR command enrichers are hardware-specific** (hard-coded Toyota HSR topics/joint indices) and are not general-purpose.
 - **Codecs require FFmpeg.** GPU encoding (VA-API/NVENC) is optional and needs the matching hardware and drivers. Builds that bundle FFmpeg with x264/x265 link GPL-licensed codecs — relevant when redistributing a binary or container image.
-- **Metadata:** some stages (the LeRobot transform, the video/depth encoders, the bundle exporter, the UUID enricher) need airoa `meta.json` for the dataset UUID/segments. The ingestors enforce this by default; disable with `require_metadata: false` for ingest/inspect-only pipelines.
+- **Metadata:** some stages (the LeRobot transform, the video/depth encoders, the bundle exporter, the UUID enricher) need moma `meta.json` for the dataset UUID/segments. The ingestors enforce this by default; disable with `require_metadata: false` for ingest/inspect-only pipelines.
 - **`compressedDepth` `32FC1` PNG payloads** are recognized but not decoded in this release; use the `16UC1` (PNG or RVL) form for depth ingest.
 - **`PointCloud2` binary payloads** are externalized during ingest but are not currently serialized into the Parquet + video bundle in this release; the topic table is exported, but the binary payload is not.
 

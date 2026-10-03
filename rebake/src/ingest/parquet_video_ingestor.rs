@@ -10,7 +10,7 @@ use crate::core::conversion::lazy_to_record_batch_rechunk;
 use crate::core::error::{OptionExt, PolarsExt, StageResult};
 use crate::core::stage::{Context, PipelineInputKind, Stage, StageConfig, StageError};
 use crate::encode::video_artifact::{VideoArtifact, VideoMetadata};
-use crate::schema::metadata::AiroaMetadata;
+use crate::schema::metadata::MomaMetadata;
 use crate::schema::metadata::arrow::record_batch_to_metadata;
 
 const PARQUET_DIR_NAME: &str = "parquet";
@@ -83,12 +83,12 @@ impl ParquetVideoIngestor {
         })
     }
 
-    fn load_metadata(parquet_dir: &Utf8Path) -> StageResult<AiroaMetadata> {
+    fn load_metadata(parquet_dir: &Utf8Path) -> StageResult<MomaMetadata> {
         let metadata_path = parquet_dir.join(METADATA_FILE_NAME);
         let metadata_df = Self::read_parquet_dataframe(&metadata_path)?;
         let record_batch = lazy_to_record_batch_rechunk(&metadata_df.lazy());
         let metadata = record_batch_to_metadata(&record_batch)?;
-        Ok(AiroaMetadata::V2_0(metadata))
+        Ok(MomaMetadata::V2_0(metadata))
     }
 
     fn load_topic_type_map(parquet_dir: &Utf8Path) -> StageResult<HashMap<String, String>> {
@@ -290,7 +290,7 @@ impl Stage for ParquetVideoIngestor {
         context.set_output_dir(bundle_root);
         context.set_dataset(dataset);
         context.set_topic_message_type_map(topic_type_map);
-        context.set_airoa_metadata(metadata);
+        context.set_moma_metadata(metadata);
 
         if !video_registry.is_empty() {
             context.set_video_registry(video_registry);
@@ -405,7 +405,7 @@ mod tests {
             "sensor_msgs/msg/Image"
         );
         assert_eq!(
-            context.airoa_metadata().unwrap().uuid_string(),
+            context.moma_metadata().unwrap().uuid_string(),
             metadata.uuid
         );
         assert_eq!(

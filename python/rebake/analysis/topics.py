@@ -77,7 +77,7 @@ def compute_topic_metrics(
 
     Args:
         topic_timestamps_ns: Mapping from topic name to nanosecond timestamps.
-        metadata: Airoa metadata dictionary with an ``episode`` window.
+        metadata: Moma metadata dictionary with an ``episode`` window.
         topic_type_map: Mapping from topic name to ROS message type.
         required_topics: Topics used by downstream episode/segment quality checks.
         required_topic_profile: Optional label for the required-topic policy.

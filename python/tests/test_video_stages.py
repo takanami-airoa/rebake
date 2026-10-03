@@ -51,8 +51,8 @@ def test_video_encoder_decoder(tmp_path):
 
     context.set_image_data({topic_name: frames})
     context.set_video_cache_dir(str(tmp_path))
-    # VideoEncoder requires airoa_metadata with uuid
-    context.set_airoa_metadata(
+    # VideoEncoder requires moma_metadata with uuid
+    context.set_moma_metadata(
         {
             "uuid": test_uuid,
             "version": "1.3",

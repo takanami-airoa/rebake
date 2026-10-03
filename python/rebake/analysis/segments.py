@@ -55,7 +55,7 @@ def compute_segment_metrics(
 
     Args:
         topic_timestamps_ns: Mapping from topic name to nanosecond timestamp sequence.
-        metadata: Airoa metadata dictionary. V1.3 and V2.0 are both accepted.
+        metadata: Moma metadata dictionary. V1.3 and V2.0 are both accepted.
         required_topics: Required topics used to evaluate each segment window.
 
     Returns:

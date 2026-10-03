@@ -167,7 +167,7 @@ class LeRobotV21Transformer:
         Args:
             topics: Dictionary mapping topic names to Arrow Tables.
                 Each table should contain synchronized data.
-            metadata: Airoa metadata dictionary. Must include 'uuid',
+            metadata: Moma metadata dictionary. Must include 'uuid',
                 'run.segments', and 'run.instructions'.
             fps: Frame rate for the output videos and data.
             video_registry: Dictionary mapping topic names to typed
@@ -201,7 +201,7 @@ class LeRobotV21Transformer:
             ... )
         """
         context = Context.from_tables(topics)
-        context.set_airoa_metadata(metadata)
+        context.set_moma_metadata(metadata)
         context.set_fps(fps)
 
         if image_data is not None and video_registry is not None:

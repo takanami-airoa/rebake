@@ -10,7 +10,7 @@ dependencies = [
     "pandas>=2.3.3",
     "polars[pyarrow]>=1.35.1",
     "pyarrow>=22.0.0",
-    "airoa-metadata",
+    "moma-metadata",
     "mcap>=1.3.0",
     "mcap-ros2-support>=0.5.6",
 ]
@@ -31,7 +31,7 @@ video = [
 output_max_bytes = 10_000_000
 
 [tool.uv.sources]
-airoa-metadata = { git = "<metadata-schema-repository-url>", tag = "v1.4" }  # withheld for anonymous review
+moma-metadata = { git = "<metadata-schema-repository-url>", tag = "v1.4" }  # withheld for anonymous review
 
 [tool.uv.workspace]
 members = [

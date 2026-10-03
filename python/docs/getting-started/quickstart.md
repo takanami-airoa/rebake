@@ -3,7 +3,7 @@
 This guide walks you through the basic workflow of using rebake to process a ROS bag file.
 
 !!! note "Prerequisite — `meta.json`"
-    The ingestors read an airoa `meta.json` from the rosbag's parent directory by
+    The ingestors read an moma `meta.json` from the rosbag's parent directory by
     default. To process a plain rosbag without one, pass
     `Rosbag2IngestorConfig(require_metadata=False)` — but the LeRobot transformer and
     the video encoders still require that metadata (dataset UUID, segments, labels).
@@ -103,7 +103,7 @@ context = delta_enricher.run(context)
 
 ### 5. Encode Video (Optional)
 
-Convert image sequences to video. The encoder writes to `{video_cache_dir}/{uuid}/{topic}.mp4`, where `uuid` comes from the bag's airoa metadata — so the context must carry `airoa_metadata` (loaded by the ingestor from `meta.json`).
+Convert image sequences to video. The encoder writes to `{video_cache_dir}/{uuid}/{topic}.mp4`, where `uuid` comes from the bag's moma metadata — so the context must carry `moma_metadata` (loaded by the ingestor from `meta.json`).
 
 ```python
 from rebake.encode import VideoEncoderConfig

@@ -237,7 +237,7 @@ mod tests {
             },
             runner: Runner {
                 runner_type: RunnerType::Operator,
-                organization: "airoa".to_string(),
+                organization: "moma".to_string(),
                 name: "operator".to_string(),
             },
             devices: vec![Device {

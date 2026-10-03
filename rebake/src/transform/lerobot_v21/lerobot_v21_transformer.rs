@@ -67,7 +67,7 @@ impl StageConfig for LeRobotV21TransformerConfig {
 /// A pipeline stage that transforms synchronized rosbag data into LeRobot v2.1 dataset format.
 ///
 /// This transformer is typically the final stage in a `rebake` pipeline. It takes time-synchronized
-/// ROS topics and airoa metadata, assembles them into episodes based on segment definitions, and
+/// ROS topics and moma metadata, assembles them into episodes based on segment definitions, and
 /// outputs the complete LeRobot v2.1 dataset structure including parquet files, encoded videos,
 /// and JSON metadata.
 ///
@@ -105,7 +105,7 @@ impl StageConfig for LeRobotV21TransformerConfig {
 ///
 /// - `dataset`: **Required** (must contain `synched_timestamp_ns` column from time synchronization)
 /// - `dataset`: **Required** (must contain every topic referenced by `robot_model`)
-/// - `airoa_metadata`: **Required** (V1.3 or V2.0 format with segments and labels)
+/// - `moma_metadata`: **Required** (V1.3 or V2.0 format with segments and labels)
 /// - `fps`: Conditional (if not set, attempts to infer from dataset frame spacing)
 /// - `image_data` OR `video_registry`: Conditional (at least one required for video encoding)
 ///
@@ -116,7 +116,7 @@ impl StageConfig for LeRobotV21TransformerConfig {
 ///
 /// # Errors
 ///
-/// - [`StageError::MissingData`]: `dataset` not set, `airoa_metadata` not set, `fps` not set
+/// - [`StageError::MissingData`]: `dataset` not set, `moma_metadata` not set, `fps` not set
 ///   and cannot be inferred, `video_registry` missing when `image_data` is absent
 /// - [`StageError::Io`]: Robot model file read failure, output file write failure
 /// - [`StageError::InvalidData`]: No segments overlap with the synchronized timeline,
@@ -178,23 +178,23 @@ fn execute_pipeline(
 
     // Take ownership of metadata and convert to V2.0 format.
     // This is where V1.3 -> V2.0 conversion happens (if metadata was V1.3).
-    let airoa_metadata = context
-        .take_airoa_metadata()
-        .or_missing("airoa_metadata in context (did Rosbag2Ingestor load meta.json?)")?
+    let moma_metadata = context
+        .take_moma_metadata()
+        .or_missing("moma_metadata in context (did Rosbag2Ingestor load meta.json?)")?
         .into_v2_0()?;
 
     // Create UUID subdirectory for this rosbag
-    let uuid_string = airoa_metadata.uuid.to_string();
+    let uuid_string = moma_metadata.uuid.to_string();
     let outdir = base_outdir.join(&uuid_string);
 
     // Register labels as tasks in LeRobot metadata
-    register_labels(metadata, &airoa_metadata.labels);
+    register_labels(metadata, &moma_metadata.labels);
 
     // Also register episode label as a task (for composite/SHT task index)
-    if !airoa_metadata.episode.label.is_empty() {
+    if !moma_metadata.episode.label.is_empty() {
         register_labels(
             metadata,
-            std::slice::from_ref(&airoa_metadata.episode.label),
+            std::slice::from_ref(&moma_metadata.episode.label),
         );
     }
 
@@ -208,7 +208,7 @@ fn execute_pipeline(
         synched_timestamp_range(&dataset)?.or_missing("synched_timestamp_ns values in dataset")?;
 
     let indexed_segments = filter_segments_with_indices_within_range(
-        &airoa_metadata.segments,
+        &moma_metadata.segments,
         timeline_start,
         timeline_end,
     );
@@ -243,7 +243,7 @@ uuid: {}, timeline_start: {}, timeline_end: {}",
             &topic_feature_map,
             &dataset,
             &indexed_segments,
-            &airoa_metadata,
+            &moma_metadata,
             frame_spacing,
             fps,
         )
@@ -260,7 +260,7 @@ uuid: {}, timeline_start: {}, timeline_end: {}",
             &topic_feature_map,
             &dataset,
             &segments,
-            &airoa_metadata,
+            &moma_metadata,
             frame_spacing,
             fps,
         )
@@ -277,7 +277,7 @@ fn execute_sht_pipeline(
     topic_feature_map: &TopicFeatureMap,
     dataset: &HashMap<String, LazyFrame>,
     segments: &[Segment],
-    airoa_metadata: &MetadataV2_0,
+    moma_metadata: &MetadataV2_0,
     frame_spacing: f64,
     fps: usize,
 ) -> Result<Context, StageError> {
@@ -304,11 +304,11 @@ fn execute_sht_pipeline(
     };
 
     // Get composite task index from episode label
-    let composite_task_idx = episode_task_index(metadata, &airoa_metadata.episode);
+    let composite_task_idx = episode_task_index(metadata, &moma_metadata.episode);
 
     let mut segment_frames = Vec::with_capacity(segments.len());
     for segment in segments {
-        let task_name = find_label(&airoa_metadata.labels, segment.label_idx)?;
+        let task_name = find_label(&moma_metadata.labels, segment.label_idx)?;
         let task_index = metadata
             .get_task_index(task_name)
             .copied()
@@ -367,7 +367,7 @@ fn execute_sht_pipeline(
         &joined,
         &video_stats,
         outdir,
-        airoa_metadata,
+        moma_metadata,
         DATA_PATH_TEMPLATE,
         VIDEO_PATH_TEMPLATE,
         LEROBOT_VERSION,
@@ -375,7 +375,7 @@ fn execute_sht_pipeline(
     )?;
     let episode = composer.build_episode(
         &joined,
-        airoa_metadata,
+        moma_metadata,
         &lerobot_tasks,
         last_segment_success,
         METADATA_VERSION,
@@ -401,7 +401,7 @@ fn execute_pa_pipeline(
     topic_feature_map: &TopicFeatureMap,
     dataset: &HashMap<String, LazyFrame>,
     indexed_segments: &[(usize, Segment)],
-    airoa_metadata: &MetadataV2_0,
+    moma_metadata: &MetadataV2_0,
     frame_spacing: f64,
     fps: usize,
 ) -> Result<Context, StageError> {
@@ -424,7 +424,7 @@ fn execute_pa_pipeline(
     };
 
     // Get composite task index from episode label
-    let composite_task_idx = episode_task_index(metadata, &airoa_metadata.episode);
+    let composite_task_idx = episode_task_index(metadata, &moma_metadata.episode);
 
     // Accumulators for cumulative statistics
     let mut global_frame_offset: usize = 0;
@@ -442,7 +442,7 @@ fn execute_pa_pipeline(
 
     // Process each segment as a separate episode
     for (episode_index, (source_segment_index, segment)) in indexed_segments.iter().enumerate() {
-        let task_name = find_label(&airoa_metadata.labels, segment.label_idx)?;
+        let task_name = find_label(&moma_metadata.labels, segment.label_idx)?;
         let task_index = metadata
             .get_task_index(task_name)
             .copied()
@@ -524,7 +524,7 @@ fn execute_pa_pipeline(
         );
         let episode = composer.build_episode_for_pa(
             &segment_frame,
-            airoa_metadata,
+            moma_metadata,
             &lerobot_tasks,
             segment.success,
             METADATA_VERSION,
@@ -571,7 +571,7 @@ fn execute_pa_pipeline(
         reference_frame,
         &all_video_stats,
         outdir,
-        airoa_metadata,
+        moma_metadata,
         DATA_PATH_TEMPLATE,
         VIDEO_PATH_TEMPLATE,
         LEROBOT_VERSION,
@@ -1604,7 +1604,7 @@ $defs:
         assert!(matches!(err, StageError::MissingData(_)));
     }
 
-    /// Error case: returns MissingData error when airoa_metadata is not set
+    /// Error case: returns MissingData error when moma_metadata is not set
     #[test]
     fn test_transformer_fails_without_metadata() {
         use std::collections::HashMap;
@@ -1621,7 +1621,7 @@ $defs:
         let mut stage = config.build();
 
         let context = Context {
-            dataset: Some(HashMap::new()), // dataset exists but airoa_metadata is missing
+            dataset: Some(HashMap::new()), // dataset exists but moma_metadata is missing
             ..Default::default()
         };
 
@@ -1739,7 +1739,7 @@ $defs:
             .lazy(),
         )]));
         context.set_fps(10);
-        context.set_airoa_metadata(parse_metadata(metadata_json).unwrap());
+        context.set_moma_metadata(parse_metadata(metadata_json).unwrap());
 
         let result = stage.run(context);
 

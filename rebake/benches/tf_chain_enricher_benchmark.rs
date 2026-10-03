@@ -13,7 +13,7 @@ use rebake::ingest::rosbag1_ingestor::{Rosbag1Ingestor, Rosbag1IngestorConfig};
 
 fn build_tf_buffer_dataset() -> HashMap<String, LazyFrame> {
     let manifest_dir = Utf8PathBuf::from(env!("CARGO_MANIFEST_DIR"));
-    let rosbag_path = manifest_dir.join("../airoa-moma-raw/000730/data.bag");
+    let rosbag_path = manifest_dir.join("../moma-raw/000730/data.bag");
 
     let mut context = Context::default();
     context.set_rosbag_path(rosbag_path);

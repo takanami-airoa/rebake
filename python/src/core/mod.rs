@@ -10,12 +10,12 @@ use pyo3::exceptions::PyRuntimeError;
 use pyo3::prelude::*;
 use pyo3::types::PyModuleMethods;
 
-use rebake::schema::metadata::arrow::airoa_metadata_to_record_batch;
+use rebake::schema::metadata::arrow::moma_metadata_to_record_batch;
 use rebake::schema::metadata::{parse_metadata, parse_metadata_as_v2_0};
 
 /// Convert metadata JSON to an Arrow RecordBatch.
 ///
-/// This function converts an Airoa metadata dictionary (as JSON string)
+/// This function converts an Moma metadata dictionary (as JSON string)
 /// to an Arrow RecordBatch, preserving the full nested structure.
 ///
 /// Supports both V1.3 and V2.0 metadata formats. The original format is
@@ -31,7 +31,7 @@ use rebake::schema::metadata::{parse_metadata, parse_metadata_as_v2_0};
 pub fn metadata_to_arrow(metadata_json: &str) -> PyResult<PyArrowType<RecordBatch>> {
     let metadata = parse_metadata(metadata_json)
         .map_err(|e| PyRuntimeError::new_err(format!("Failed to parse metadata JSON: {e}")))?;
-    let batch = airoa_metadata_to_record_batch(&metadata)
+    let batch = moma_metadata_to_record_batch(&metadata)
         .map_err(|e| PyRuntimeError::new_err(format!("Failed to convert metadata: {e}")))?;
     Ok(PyArrowType(batch))
 }

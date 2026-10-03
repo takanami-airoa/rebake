@@ -1,6 +1,6 @@
-//! Airoa metadata parsing and conversion.
+//! Moma metadata parsing and conversion.
 //!
-//! Handles parsing of Airoa metadata files (V1.3 and V2.0 formats)
+//! Handles parsing of Moma metadata files (V1.3 and V2.0 formats)
 //! and provides conversion between versions.
 //!
 //! # Supported Formats
@@ -22,7 +22,7 @@ pub use v2_0::MetadataV2_0;
 
 use crate::core::StageError;
 
-/// Airoa metadata that can hold either V1.3 or V2.0 format.
+/// Moma metadata that can hold either V1.3 or V2.0 format.
 ///
 /// This enum allows storing metadata in its original format without immediate conversion.
 /// Conversion to V2.0 can be deferred to later stages (e.g., Transform stage).
@@ -31,12 +31,12 @@ use crate::core::StageError;
 // Note: V2_0 is larger than V1_3 by design (more comprehensive metadata).
 // Boxing would add indirection and API complexity without significant benefit.
 #[allow(clippy::large_enum_variant)]
-pub enum AiroaMetadata {
+pub enum MomaMetadata {
     V1_3(MetadataV1_3),
     V2_0(MetadataV2_0),
 }
 
-impl AiroaMetadata {
+impl MomaMetadata {
     /// Convert to V2.0 format, performing conversion if necessary.
     ///
     /// - If already V2.0, returns a clone of the metadata
@@ -46,37 +46,37 @@ impl AiroaMetadata {
     /// Returns an error if V1.3 to V2.0 conversion fails (e.g., missing instruction references).
     pub fn into_v2_0(self) -> Result<MetadataV2_0, StageError> {
         match self {
-            AiroaMetadata::V1_3(v1_3) => MetadataV2_0::try_from(v1_3),
-            AiroaMetadata::V2_0(v2_0) => Ok(v2_0),
+            MomaMetadata::V1_3(v1_3) => MetadataV2_0::try_from(v1_3),
+            MomaMetadata::V2_0(v2_0) => Ok(v2_0),
         }
     }
 
     /// Get the version of this metadata.
     pub fn version(&self) -> MetadataVersion {
         match self {
-            AiroaMetadata::V1_3(_) => MetadataVersion::V1_3,
-            AiroaMetadata::V2_0(_) => MetadataVersion::V2_0,
+            MomaMetadata::V1_3(_) => MetadataVersion::V1_3,
+            MomaMetadata::V2_0(_) => MetadataVersion::V2_0,
         }
     }
 
     /// Get UUID as string (works for both versions).
     pub fn uuid_string(&self) -> String {
         match self {
-            AiroaMetadata::V1_3(v1_3) => v1_3.uuid.clone(),
-            AiroaMetadata::V2_0(v2_0) => v2_0.uuid.clone(),
+            MomaMetadata::V1_3(v1_3) => v1_3.uuid.clone(),
+            MomaMetadata::V2_0(v2_0) => v2_0.uuid.clone(),
         }
     }
 }
 
-impl From<MetadataV1_3> for AiroaMetadata {
+impl From<MetadataV1_3> for MomaMetadata {
     fn from(v1_3: MetadataV1_3) -> Self {
-        AiroaMetadata::V1_3(v1_3)
+        MomaMetadata::V1_3(v1_3)
     }
 }
 
-impl From<MetadataV2_0> for AiroaMetadata {
+impl From<MetadataV2_0> for MomaMetadata {
     fn from(v2_0: MetadataV2_0) -> Self {
-        AiroaMetadata::V2_0(v2_0)
+        MomaMetadata::V2_0(v2_0)
     }
 }
 
@@ -116,19 +116,19 @@ pub fn detect_version(json: &str) -> Result<MetadataVersion, StageError> {
 /// Parse metadata JSON and return it in its original format (V1.3 or V2.0).
 ///
 /// This function detects the version and parses without conversion.
-/// Use `AiroaMetadata::into_v2_0()` to convert later if needed.
-pub fn parse_metadata(json: &str) -> Result<AiroaMetadata, StageError> {
+/// Use `MomaMetadata::into_v2_0()` to convert later if needed.
+pub fn parse_metadata(json: &str) -> Result<MomaMetadata, StageError> {
     let version = detect_version(json)?;
     match version {
         MetadataVersion::V2_0 => {
             let v2_0: MetadataV2_0 = serde_json::from_str(json)
                 .map_err(|e| StageError::invalid_with("failed to parse V2.0 metadata", e))?;
-            Ok(AiroaMetadata::V2_0(v2_0))
+            Ok(MomaMetadata::V2_0(v2_0))
         }
         MetadataVersion::V1_3 => {
             let v1_3: MetadataV1_3 = serde_json::from_str(json)
                 .map_err(|e| StageError::invalid_with("failed to parse V1.3 metadata", e))?;
-            Ok(AiroaMetadata::V1_3(v1_3))
+            Ok(MomaMetadata::V1_3(v1_3))
         }
     }
 }
@@ -194,7 +194,7 @@ mod tests {
     /// Test Arrow RecordBatch conversion with testdata.
     #[test]
     fn test_arrow_conversion_with_testdata() {
-        use super::arrow::airoa_metadata_to_record_batch;
+        use super::arrow::moma_metadata_to_record_batch;
         use std::fs;
 
         // Test V2.0 → Arrow
@@ -206,7 +206,7 @@ mod tests {
 
         let metadata = parse_metadata(&v2_0_json).expect("failed to parse V2.0 metadata");
 
-        let batch = airoa_metadata_to_record_batch(&metadata)
+        let batch = moma_metadata_to_record_batch(&metadata)
             .expect("failed to convert to Arrow RecordBatch");
 
         assert_eq!(batch.num_rows(), 1);
@@ -222,10 +222,10 @@ mod tests {
         assert!(column_names.contains(&"segments"));
     }
 
-    /// Test Arrow conversion with V1.3 metadata (via AiroaMetadata enum).
+    /// Test Arrow conversion with V1.3 metadata (via MomaMetadata enum).
     #[test]
     fn test_arrow_conversion_with_v1_3_testdata() {
-        use super::arrow::airoa_metadata_to_record_batch;
+        use super::arrow::moma_metadata_to_record_batch;
         use std::fs;
 
         let v1_3_path = concat!(
@@ -237,7 +237,7 @@ mod tests {
         let metadata = parse_metadata(&v1_3_json).expect("failed to parse V1.3 metadata");
 
         // V1.3 metadata should serialize to Arrow with V1.3 schema
-        let batch = airoa_metadata_to_record_batch(&metadata)
+        let batch = moma_metadata_to_record_batch(&metadata)
             .expect("failed to convert V1.3 to Arrow RecordBatch");
 
         assert_eq!(batch.num_rows(), 1);
@@ -255,7 +255,7 @@ mod tests {
     fn test_parse_v2_0_with_robot_uri() {
         let json = r#"
         {
-            "$schema": "https://raw.githubusercontent.com/airoa-org/airoa-metadata/main/airoa_metadata/schemas/v2_0.json",
+            "$schema": "https://raw.githubusercontent.com/anonymous-org/moma-metadata/main/moma_metadata/schemas/v2_0.json",
             "schema_version": "2.0",
             "uuid": "123e4567-e89b-12d3-a456-426614174000",
             "robot": {
@@ -502,7 +502,7 @@ mod tests {
                 "entities": [
                     {"role": "robot", "id": "robot-001"},
                     {"role": "location", "name": "test-site"},
-                    {"role": "organization", "name": "airoa"},
+                    {"role": "organization", "name": "moma"},
                     {"role": "operator", "name": "op-name"}
                 ],
                 "components": []
@@ -520,7 +520,7 @@ mod tests {
 
         let metadata =
             parse_metadata_as_v2_0(v1_3_json).expect("expected conversion with organization");
-        assert_eq!(metadata.runner.organization, "airoa");
+        assert_eq!(metadata.runner.organization, "moma");
         assert_eq!(metadata.runner.name, "op-name");
     }
 

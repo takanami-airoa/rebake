@@ -42,11 +42,11 @@ MetadataV2_0 = _internal.core.MetadataV2_0
 def metadata_to_arrow(metadata: dict[str, object]) -> "pa.Table":
     """Convert metadata dictionary to an Arrow Table.
 
-    This function converts an Airoa metadata dictionary to an Arrow Table,
+    This function converts an Moma metadata dictionary to an Arrow Table,
     preserving the full nested structure including lists of structs.
 
     Args:
-        metadata: Airoa metadata as a Python dictionary.
+        metadata: Moma metadata as a Python dictionary.
 
     Returns:
         Arrow Table containing the metadata (single row).
@@ -83,7 +83,7 @@ def normalize_metadata_to_v2_0(metadata: dict[str, Any]) -> dict[str, Any]:
     serialized from rebake's Rust-side V2.0 schema.
 
     Args:
-        metadata: Airoa metadata as a Python dictionary.
+        metadata: Moma metadata as a Python dictionary.
 
     Returns:
         Canonical V2.0 metadata as a Python dictionary.

@@ -9,7 +9,7 @@
 //! {output_dir}/{uuid}/
 //!   parquet/
 //!     {topic}.parquet           # Topic data with rosbag_uuid column
-//!     _metadata.parquet         # Airoa metadata
+//!     _metadata.parquet         # Moma metadata
 //!     _topic_type_map.parquet   # Topic name to message type mapping
 //!     _video_registry.parquet   # Topic name to video metadata mapping
 //!   videos/
@@ -32,7 +32,7 @@ use crate::core::stage::{Context, Stage, StageConfig, StageError};
 use crate::encode::depth_video_encoder::{DepthVideoConfig, encode_depth_videos};
 use crate::encode::video_artifact::VideoArtifact;
 use crate::encode::video_encoder::{VideoEncoderConfig, VideoEncoderVariant};
-use crate::schema::metadata::AiroaMetadata;
+use crate::schema::metadata::MomaMetadata;
 use crate::schema::metadata::arrow::metadata_to_record_batch;
 
 fn build_rgb_video_artifact(
@@ -66,7 +66,7 @@ fn build_rgb_video_artifact(
 /// {output_dir}/{uuid}/
 ///   parquet/
 ///     {topic}.parquet           # Topic data with rosbag_uuid column
-///     _metadata.parquet         # Airoa metadata
+///     _metadata.parquet         # Moma metadata
 ///     _topic_type_map.parquet   # Topic name to message type mapping
 ///     _video_registry.parquet   # Topic name to video metadata mapping
 ///   videos/
@@ -148,7 +148,7 @@ impl StageConfig for ParquetVideoExporterConfig {
 /// # Preconditions
 ///
 /// - `dataset`: **Required** - HashMap of topic names to LazyFrames
-/// - `airoa_metadata`: **Required** - Metadata containing UUID
+/// - `moma_metadata`: **Required** - Metadata containing UUID
 /// - `topic_message_type_map`: **Required** - Topic to message type mapping
 /// - `image_data`: Conditional - If present, videos will be encoded
 ///
@@ -161,7 +161,7 @@ impl StageConfig for ParquetVideoExporterConfig {
 /// # Output Files
 ///
 /// - `parquet/{topic}.parquet` - Each topic's data
-/// - `parquet/_metadata.parquet` - Airoa metadata as Parquet
+/// - `parquet/_metadata.parquet` - Moma metadata as Parquet
 /// - `parquet/_topic_type_map.parquet` - Topic name to message type mapping
 /// - `parquet/_video_registry.parquet` - Topic name to video metadata mapping (if videos exist)
 /// - `videos/{topic}.mp4` - Encoded videos (if image_data exists)
@@ -256,10 +256,10 @@ impl ParquetVideoExporter {
         Ok(())
     }
 
-    /// Writes canonical V2.0 Airoa metadata as a Parquet file.
+    /// Writes canonical V2.0 Moma metadata as a Parquet file.
     fn write_metadata_parquet(
         &self,
-        metadata: &AiroaMetadata,
+        metadata: &MomaMetadata,
         parquet_dir: &Utf8Path,
     ) -> StageResult<()> {
         let output_path = parquet_dir.join("_metadata.parquet");
@@ -408,9 +408,9 @@ impl Stage for ParquetVideoExporter {
             .clone();
 
         let metadata = context
-            .airoa_metadata
+            .moma_metadata
             .as_ref()
-            .or_missing("airoa_metadata is required for ParquetVideoExporter")?
+            .or_missing("moma_metadata is required for ParquetVideoExporter")?
             .clone();
 
         let topic_type_map = context

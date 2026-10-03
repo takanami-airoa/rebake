@@ -37,7 +37,7 @@ def _metadata_dict(
         "environment": {"type": "real_world", "site": "lab", "location": None},
         "runner": {
             "type": "operator",
-            "organization": "airoa",
+            "organization": "moma",
             "name": "operator",
         },
         "devices": [{"role": "controller", "type": "joystick", "id": "joy-1"}],

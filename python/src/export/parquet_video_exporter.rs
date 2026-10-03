@@ -82,7 +82,7 @@ impl PyParquetVideoExporterConfig {
 /// {output_dir}/{uuid}/
 ///   parquet/
 ///     {topic}.parquet           # Topic data
-///     _metadata.parquet         # Airoa metadata
+///     _metadata.parquet         # Moma metadata
 ///     _topic_type_map.parquet   # Topic name to message type mapping
 ///     _video_registry.parquet   # Topic name to video path mapping
 ///   videos/
@@ -91,7 +91,7 @@ impl PyParquetVideoExporterConfig {
 ///
 /// Preconditions:
 ///     - dataset: Required - HashMap of topic names to LazyFrames
-///     - airoa_metadata: Required - Metadata containing UUID
+///     - moma_metadata: Required - Metadata containing UUID
 ///     - topic_message_type_map: Required - Topic to message type mapping
 ///     - image_data: Optional - If present, videos will be encoded
 ///
@@ -126,7 +126,7 @@ impl PyParquetVideoExporter {
     /// Args:
     ///     context: The context containing data to export. Must have:
     ///         - `dataset` (required)
-    ///         - `airoa_metadata` (required)
+    ///         - `moma_metadata` (required)
     ///         - `topic_message_type_map` (required)
     ///         - `image_data` (optional - videos encoded if present)
     ///
